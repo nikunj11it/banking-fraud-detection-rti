@@ -1,0 +1,97 @@
+# Example KQL Queries for Data Agent Configuration
+# Add these as "Examples" in the Data Agent portal to improve query generation
+
+## Example 1: Fraud Overview
+# Question: What is the current fraud summary?
+# KQL:
+FraudSummaryKPIs()
+
+## Example 2: Top Suspicious Transactions
+# Question: Show me the most suspicious transactions
+# KQL:
+FraudDetection()
+| where is_fraudulent == true
+| top 20 by fraud_score desc
+| project timestamp, customer_id, merchant_name, amount, fraud_score, fraud_type
+
+## Example 3: Velocity Detection
+# Question: Are there any rapid-fire transactions?
+# KQL:
+VelocityDetection()
+
+## Example 4: Customer Investigation
+# Question: Investigate customer CUST000595
+# KQL:
+FraudInvestigator('CUST000595')
+
+## Example 5: Cross-Border Risk
+# Question: Show high-risk international transactions
+# KQL:
+CrossBorderFraud()
+| where risk_level == "Critical"
+| top 20 by amount desc
+
+## Example 6: Amount Anomalies
+# Question: Which transactions have unusual spending amounts?
+# KQL:
+AmountAnomalyDetection()
+| top 20 by amount_ratio desc
+
+## Example 7: Night Activity
+# Question: Show suspicious after-hours transactions
+# KQL:
+UnusualTimeDetection()
+| summarize TxnCount = count(), TotalAmount = sum(amount) by hour_of_day, channel
+| order by hour_of_day asc
+
+## Example 8: Account Takeover
+# Question: Detect compromised accounts
+# KQL:
+AccountTakeoverDetection()
+
+## Example 9: Channel Switching
+# Question: Show customers hopping between channels
+# KQL:
+MultiChannelSwitching()
+
+## Example 10: Merchant Risk
+# Question: Which merchants have the most fraud?
+# KQL:
+FraudAlerts
+| where is_fraudulent == true
+| summarize FraudCount = count(), TotalAmount = round(sum(amount), 2) by merchant_name
+| top 10 by FraudCount desc
+
+## Example 11: Customer Risk Profile
+# Question: Who are the riskiest customers?
+# KQL:
+CustomerRiskProfile()
+| top 20 by composite_risk_score desc
+
+## Example 12: Real-Time Alerts
+# Question: Show me the latest fraud alerts
+# KQL:
+RealTimeFraudDashboard()
+| order by timestamp desc
+| take 50
+
+## Example 13: Geographic Impossible Travel
+# Question: Detect impossible travel patterns
+# KQL:
+GeographicVelocityCheck()
+
+## Example 14: Fraud by Category
+# Question: Which merchant categories have the most fraud?
+# KQL:
+FraudAlerts
+| where is_fraudulent == true
+| summarize FraudCount = count(), AvgAmount = round(avg(amount), 2) by merchant_name
+| order by FraudCount desc
+
+## Example 15: Daily Fraud Trend
+# Question: Show me the fraud trend over time
+# KQL:
+FraudAlerts
+| where is_fraudulent == true
+| summarize FraudCount = count(), FraudAmount = round(sum(amount), 2) by bin(timestamp, 1d)
+| order by timestamp asc
